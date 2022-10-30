@@ -1,5 +1,5 @@
 FROM python
-RUN pip install fastapi uvicorn firebase-admin
+RUN pip install fastapi uvicorn firebase-admin sqlalchemy
 WORKDIR /app
 COPY . .
 WORKDIR /app/src

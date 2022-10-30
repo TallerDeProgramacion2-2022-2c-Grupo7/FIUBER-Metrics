@@ -17,6 +17,30 @@ spec:
         env:
         - name: FIREBASE_CREDENTIALS
           value: "$FIREBASE_CREDENTIALS"
+        - name: DATABASE_URL
+          value: $DATABASE_URL
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+spec:
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+        - image: postgres
+          name: postgres
+          env:
+          - name: POSTGRES_PASSWORD
+            value: admin
 
 ---
 
@@ -31,6 +55,20 @@ spec:
     port: 8000
   selector:
     app: $APP_NAME
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+spec:
+  type: ClusterIP
+  ports:
+    - name: postgres
+      port: 5432
+  selector:
+    app: postgres
 
 ---
 
