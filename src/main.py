@@ -1,11 +1,11 @@
 import os
-from typing import Union
-from datetime import datetime
+from typing import Union, Literal
+from datetime import datetime, date, timedelta
 from fastapi import FastAPI, Header, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
-from common.firebase_admin import auth, firestore
-from db.events import Events
-from middlewares.id_token import IdTokenMiddleware
+from common import auth, firestore
+from db import Events
+from middlewares import IdTokenMiddleware
 
 app = FastAPI()
 
@@ -17,7 +17,7 @@ app.add_middleware(
     allow_credentials=True
 )
 
-# app.add_middleware(IdTokenMiddleware)
+app.add_middleware(IdTokenMiddleware)
 
 @app.get("/")
 async def get_events(
@@ -35,10 +35,23 @@ async def get_events(
         "page_token": (page_token + n_results) if more_results else None
     }
 
-@app.post("/")
-async def create_event(uid: str, event_type: str):
+@app.post("/{event_type}")
+async def create_event(
+        uid: str,
+        event_type: Literal["signup", "login", "passwordReset"]
+    ):
     """
     Create a new login event.
     """
-    event = Events(user_id=uid, datetime=datetime.now())
+    event = Events(user_id=uid, event_type=event_type, datetime=datetime.now())
     event.save()
+
+@app.get("/stats")
+async def get_stats():
+    date_to = date.today()
+    date_from = date_to - timedelta(days=15)
+    stats = {
+        event_type: Events.get_count_by_day(event_type, date_from, date_to)
+        for event_type in ("signup", "login", "passwordReset")
+    }
+    return {"result": stats}

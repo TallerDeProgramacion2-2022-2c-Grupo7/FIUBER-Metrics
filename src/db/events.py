@@ -1,5 +1,7 @@
 import sqlalchemy.sql as sql
 from sqlalchemy import Column, String, Integer, DateTime
+from sqlalchemy import cast, Date
+from sqlalchemy import func
 from datetime import date
 from .conn import Base, Session, engine
 from .utils import row_to_dict
@@ -10,6 +12,7 @@ class Events(Base):
 
     event_id = Column(Integer, primary_key=True)
     user_id = Column(String)
+    event_type = Column(String)
     datetime = Column(DateTime)
 
     @row_to_dict
@@ -21,14 +24,19 @@ class Events(Base):
         return res.all()
     
     @row_to_dict
-    def get_count_by_day(date_from: date, date_to: date) -> list:
+    def get_count_by_day(
+            event_type: str,
+            date_from: date,
+            date_to: date
+        ) -> list:
         with Session.begin() as session:
             date = cast(Events.datetime, Date)
             res = session.query(
                 date.label("date"),
                 func.count(Events.event_id).label("count")
             ).where(
-                date.between(date_from, date_to)
+                (date.between(date_from, date_to))
+                & (Events.event_type == event_type)
             ).group_by(date)
         return res.all()
     
