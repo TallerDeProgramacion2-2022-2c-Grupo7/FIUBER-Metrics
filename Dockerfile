@@ -1,5 +1,6 @@
 FROM python
-RUN pip install fastapi uvicorn firebase-admin sqlalchemy
+RUN pip install fastapi uvicorn firebase-admin
+RUN pip install psycopg2-binary sqlalchemy
 WORKDIR /app
 COPY . .
 WORKDIR /app/src

@@ -1,23 +1,20 @@
-def row_to_dict(f):
+from .conn import Base, engine
+
+_all_tables_created = False
+
+def db_method(f):
+    """
+    Decorator for DB related methods.
+    Creates the tables if they don't exist
+    before executing the method itself.
+    """
     def wrapper(*args, **kwargs):
+        global _all_tables_created
+        if not _all_tables_created:
+            Base.metadata.create_all(engine)
+            _all_tables_created = True
         res = f(*args, **kwargs)
-        try:
-            return [
-                {
-                    k: v
-                    for k, v in row.__dict__.items()
-                    if k != "_sa_instance_state"
-                }
-                for row in res
-            ]
-        except AttributeError:
-            return [
-                {
-                    k: v
-                    for k, v in dict(row).items()
-                    if k != "_sa_instance_state"
-                }
-                for row in res
-            ]
-        raise RuntimeError("Unexpected error parsing result rows")
+        if not res:
+            return res
+        return [dict(row) for row in res]
     return wrapper
