@@ -19,6 +19,7 @@ The API will be available on `http://localhost:8000/`.
 The following GitHub Actions Secrets are required:
 1. `DOCKERHUB_USERNAME`
 2. `DOCKERHUB_TOKEN`
-3. `DATABASE_HOST`
-4. `DATABASE_PASSWORD`
-5. `FIREBASE_CREDENTIALS` (generated with `cat firebase-credentials.json | base64 -w 0`)
+3. `KUBE_CONFIG_DATA` (generated with `cat kubeconfig.yaml | base64 -w 0`)
+4. `DATABASE_HOST`
+5. `DATABASE_PASSWORD`
+6. `FIREBASE_CREDENTIALS` (generated with `cat firebase-credentials.json | base64 -w 0`)
