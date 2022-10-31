@@ -21,14 +21,14 @@ app.add_middleware(IdTokenMiddleware)
 
 @app.get("/")
 async def get_events(
-        max_results: Union[int, None] = 100,
-        page_token: Union[int, None] = 1,
+        max_results: Union[int, None] = 10,
+        page_token: Union[int, None] = None,
     ):
     """
     List up to max_results recent events.
     """
     try:
-        events = Events.find_all(page_token, page_token + max_results - 1)
+        events = Events.find_all(page_token, max_results)
     except dbexc.OperationalError:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -38,7 +38,7 @@ async def get_events(
     more_results = n_results >= max_results
     return {
         "result": events,
-        "page_token": (page_token + n_results) if more_results else None
+        "page_token": (events[-1]["event_id"]) if more_results else None
     }
 
 @app.post("/{event_type}")

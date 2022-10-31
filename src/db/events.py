@@ -3,6 +3,7 @@ from sqlalchemy import Column, String, Integer, DateTime
 from sqlalchemy import cast, Date
 from sqlalchemy import func
 from datetime import date
+from typing import Union
 from .conn import Base, Session
 from .utils import db_method
 
@@ -21,11 +22,15 @@ class Events(Base):
                 yield key, value
 
     @db_method
-    def find_all(id_from: int=1, id_to: int=100):
+    def find_all(
+            id_from: Union[int, None] = None,
+            max_results: int = 10
+        ) -> list:
         with Session.begin() as session:
-            res = session.query(Events).where(
-                Events.event_id.between(id_from, id_to)
-            )
+            query = session.query(Events)
+            if id_from is not None:
+                query = query.where(Events.event_id < id_from)
+            res = query.order_by(Events.event_id.desc()).limit(max_results)
         return res.all()
 
     @db_method
