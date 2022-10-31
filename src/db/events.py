@@ -6,6 +6,15 @@ from datetime import date
 from typing import Union
 from .conn import Base, Session
 from .utils import db_method
+from enum import Enum
+
+class EventType(str, Enum):
+    signup = "signup"
+    login = "login"
+    password_reset = "passwordReset"
+    federated_signup = "federatedSignup"
+    federated_login = "federatedLogin"
+    block = "block"
 
 class Events(Base):
     __tablename__ = "events"

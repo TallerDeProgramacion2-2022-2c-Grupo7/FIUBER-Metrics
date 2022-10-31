@@ -3,8 +3,8 @@ from typing import Union, Literal
 from datetime import datetime, date, timedelta
 from fastapi import FastAPI, Header, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
-from common import auth, firestore
-from db import Events, dbexc
+from common import auth, firestore, utils
+from db import Events, EventType, dbexc
 from middlewares import IdTokenMiddleware
 
 app = FastAPI()
@@ -42,10 +42,7 @@ async def get_events(
     }
 
 @app.post("/{event_type}")
-async def create_event(
-        uid: str,
-        event_type: Literal["signup", "login", "passwordReset"]
-    ):
+async def create_event(uid: str, event_type: EventType):
     """
     Create a new login event.
     """
@@ -64,8 +61,12 @@ async def get_stats():
     date_from = date_to - timedelta(days=15)
     try:
         stats = {
-            event_type: Events.get_count_by_day(event_type, date_from, date_to)
-            for event_type in ("signup", "login", "passwordReset")
+            event_type.value: Events.get_count_by_day(
+                event_type.value,
+                date_from,
+                date_to
+            )
+            for event_type in EventType
         }
     except dbexc.OperationalError:
         raise HTTPException(
@@ -73,3 +74,13 @@ async def get_stats():
             detail="Internal server error"
         )
     return {"result": stats}
+
+@app.get("/usersSummary")
+async def get_users_summary():
+    return {
+        "result": {
+            "total_users": utils.get_user_count(),
+            "total_admins": utils.get_admin_count(),
+            "total_blocked_users": utils.get_blocked_user_count()
+        }
+    }
