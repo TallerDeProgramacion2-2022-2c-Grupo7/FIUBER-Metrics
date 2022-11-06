@@ -1,3 +1,4 @@
+import os
 from .conn import Base, engine
 
 _all_tables_created = False
@@ -10,7 +11,7 @@ def db_method(f):
     """
     def wrapper(*args, **kwargs):
         global _all_tables_created
-        if not _all_tables_created:
+        if not _all_tables_created or os.environ.get("ENV") == "test":
             Base.metadata.create_all(engine)
             _all_tables_created = True
         res = f(*args, **kwargs)

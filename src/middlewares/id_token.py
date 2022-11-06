@@ -1,3 +1,4 @@
+import os
 from fastapi import Request
 from fastapi.responses import JSONResponse
 from fastapi import status
@@ -7,6 +8,8 @@ from starlette.middleware.base import BaseHTTPMiddleware
 
 class IdTokenMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
+        if os.environ.get("ENV") == "test":
+            return await call_next(request)
         if request.method == "OPTIONS":
             return await call_next(request)
         try:
