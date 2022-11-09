@@ -4,11 +4,12 @@
 
 1. Copy the Firebase credentials JSON (`firebase_credentials.json`) into the `src` directory of the repository.
 2. Start the PostgreSQL instance.
-```
-docker run -e POSTGRES_PASSWORD=admin -it --rm -p 5432:5432 postgres
+```bash
+docker volume create fiuber-metrics-db-volume # Ejecutar por única vez
+docker run -e POSTGRES_PASSWORD=admin -it --rm -p 5432:5432 -v fiuber-metrics-db-volume:/var/lib/postgresql/data postgres
 ```
 3. Start the server:
-```
+```bash
 uvicorn main:app --reload
 ```
 
@@ -16,11 +17,11 @@ The API will be available on `http://localhost:8000/`.
 
 ## How to run tests locally
 1. Start the PostgreSQL instance.
-```
+```bash
 docker run -e POSTGRES_PASSWORD=admin -it --rm -p 5432:5432 postgres
 ```
 2. Run tests.
-```
+```bash
 cd src
 pytest test.py
 ```
