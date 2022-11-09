@@ -43,6 +43,15 @@ spec:
           env:
           - name: POSTGRES_PASSWORD
             value: "$DATABASE_PASSWORD"
+          - name: PGDATA
+            value: /var/lib/postgresql/data/db/
+          volumeMounts:
+          - mountPath: /var/lib/postgresql/data
+            name: $APP_NAME-db-volume
+      volumes:
+      - name: $APP_NAME-db-volume
+        persistentVolumeClaim:
+          claimName: $APP_NAME-db-volume-claim
 
 ---
 
