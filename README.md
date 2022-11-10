@@ -16,14 +16,8 @@ uvicorn main:app --reload
 The API will be available on `http://localhost:8000/`.
 
 ## How to run tests locally
-1. Start the PostgreSQL instance.
 ```bash
-docker run -e POSTGRES_PASSWORD=admin -it --rm -p 5432:5432 postgres
-```
-2. Run tests.
-```bash
-cd src
-pytest test.py
+./run_tests.sh
 ```
 
 ## Repository setup & okteto deployment
