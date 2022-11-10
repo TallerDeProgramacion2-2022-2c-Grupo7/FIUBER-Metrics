@@ -27,19 +27,19 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: postgres
+  name: $DATABASE_HOST
 spec:
   selector:
     matchLabels:
-      app: postgres
+      app: $DATABASE_HOST
   template:
     metadata:
       labels:
-        app: postgres
+        app: $DATABASE_HOST
     spec:
       containers:
         - image: postgres
-          name: postgres
+          name: $DATABASE_HOST
           env:
           - name: POSTGRES_PASSWORD
             value: "$DATABASE_PASSWORD"
@@ -72,14 +72,14 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: postgres
+  name: $DATABASE_HOST
 spec:
   type: ClusterIP
   ports:
-    - name: postgres
+    - name: $DATABASE_HOST
       port: 5432
   selector:
-    app: postgres
+    app: $DATABASE_HOST
 
 ---
 
