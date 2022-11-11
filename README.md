@@ -16,7 +16,11 @@ docker volume create fiuber-metrics-db-volume
 
 4. Start the PostgreSQL instance.
 ```bash
-docker run -e POSTGRES_PASSWORD=admin -it --rm -p 5432:5432 -v fiuber-metrics-db-volume:/var/lib/postgresql/data postgres
+docker run -it --rm \
+    -e POSTGRES_PASSWORD=admin \
+    -p 5432:5432 \
+    -v fiuber-metrics-db-volume:/var/lib/postgresql/data \
+    postgres
 ```
 
 5. In another terminal, start the server:
