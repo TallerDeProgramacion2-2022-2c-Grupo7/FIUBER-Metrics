@@ -3,29 +3,41 @@
 ## Local installation & usage
 
 1. Copy the Firebase credentials JSON (`firebase_credentials.json`) into the `src` directory of the repository.
-2. Start the PostgreSQL instance.
+
+2. Install the requirements.
 ```
-docker run -e POSTGRES_PASSWORD=admin -it --rm -p 5432:5432 postgres
+pip install -r requirements.txt
 ```
-3. Start the server:
+
+3. Create database volume (execute only once).
+```bash
+docker volume create fiuber-metrics-db-volume
 ```
+
+4. Start the PostgreSQL instance.
+```bash
+docker run -it --rm \
+    -e POSTGRES_PASSWORD=admin \
+    -p 5432:5432 \
+    -v fiuber-metrics-db-volume:/var/lib/postgresql/data \
+    postgres
+```
+
+5. In another terminal, start the server:
+```bash
+cd src
 uvicorn main:app --reload
 ```
 
 The API will be available on `http://localhost:8000/`.
 
-## How to run tests locally
-1. Start the PostgreSQL instance.
-```
-docker run -e POSTGRES_PASSWORD=admin -it --rm -p 5432:5432 postgres
-```
-2. Run tests.
-```
-cd src
-pytest test.py
+## Local tests execution
+Execute the following script to build and run the tests using `Docker Compose`.
+```bash
+./run_tests.sh
 ```
 
-## Repository setup & okteto deployment
+## Repository & okteto deployment setup
 
 The following GitHub Actions Secrets are required:
 1. `DOCKERHUB_USERNAME`
