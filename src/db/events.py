@@ -12,9 +12,9 @@ class EventType(str, Enum):
     signup = "signup"
     login = "login"
     password_reset = "passwordReset"
-    federated_signup = "federatedSignup"
     federated_login = "federatedLogin"
     block = "block"
+    unblock = "unblock"
 
 class Events(Base):
     __tablename__ = "events"
