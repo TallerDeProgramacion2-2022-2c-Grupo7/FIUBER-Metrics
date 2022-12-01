@@ -21,3 +21,4 @@ class DatadogEventMiddleware(BaseHTTPMiddleware):
                 str(e),
                 "error"
             )
+            raise e
