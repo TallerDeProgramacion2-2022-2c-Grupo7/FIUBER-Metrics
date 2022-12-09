@@ -6,6 +6,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from common import auth, firestore, utils
 from db import Events, EventType, dbexc
 from middlewares import IdTokenMiddleware
+from middlewares.datadog_event import DatadogEventMiddleware
+from datadog import initialize, statsd
+
+initialize(statsd_host="dd-agent", statsd_port=8125)
 
 app = FastAPI()
 
@@ -18,6 +22,7 @@ app.add_middleware(
 )
 
 app.add_middleware(IdTokenMiddleware)
+app.add_middleware(DatadogEventMiddleware)
 
 @app.get("/")
 async def get_events(

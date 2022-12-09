@@ -4,3 +4,4 @@ firebase-admin==5.4.0
 psycopg2-binary==2.9.5
 SQLAlchemy==1.4.42
 pytest==7.2.0
+datadog==0.44.0
