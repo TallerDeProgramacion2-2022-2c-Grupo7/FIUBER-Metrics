@@ -8,6 +8,7 @@ from .conn import Base, Session
 from .utils import db_method
 from enum import Enum
 
+
 class EventType(str, Enum):
     signup = "signup"
     login = "login"
@@ -15,6 +16,7 @@ class EventType(str, Enum):
     federated_login = "federatedLogin"
     block = "block"
     unblock = "unblock"
+
 
 class Events(Base):
     __tablename__ = "events"
@@ -31,10 +33,7 @@ class Events(Base):
                 yield key, value
 
     @db_method
-    def find_all(
-            id_from: Union[int, None] = None,
-            max_results: int = 10
-        ) -> list:
+    def find_all(id_from: Union[int, None] = None, max_results: int = 10) -> list:
         with Session.begin() as session:
             query = session.query(Events)
             if id_from is not None:
@@ -43,20 +42,19 @@ class Events(Base):
         return res.all()
 
     @db_method
-    def get_count_by_day(
-            event_type: str,
-            date_from: date,
-            date_to: date
-        ) -> list:
+    def get_count_by_day(event_type: str, date_from: date, date_to: date) -> list:
         with Session.begin() as session:
             date = cast(Events.datetime, Date)
-            res = session.query(
-                date.label("date"),
-                func.count(Events.event_id).label("count")
-            ).where(
-                (date.between(date_from, date_to))
-                & (Events.event_type == event_type)
-            ).group_by(date)
+            res = (
+                session.query(
+                    date.label("date"), func.count(Events.event_id).label("count")
+                )
+                .where(
+                    (date.between(date_from, date_to))
+                    & (Events.event_type == event_type)
+                )
+                .group_by(date)
+            )
         return res.all()
 
     @db_method

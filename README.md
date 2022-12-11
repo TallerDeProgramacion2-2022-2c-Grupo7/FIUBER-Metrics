@@ -1,5 +1,8 @@
 # FIUBER-Metrics
 
+[![codecov](https://codecov.io/gh/TallerDeProgramacion2-2022-2c-Grupo7/FIUBER-Metrics/branch/main/graph/badge.svg?token=KJPOL2HW69)](https://codecov.io/gh/TallerDeProgramacion2-2022-2c-Grupo7/FIUBER-Metrics)
+
+
 ## Local installation & usage
 
 1. Copy the Firebase credentials JSON (`firebase_credentials.json`) into the `src` directory of the repository.
