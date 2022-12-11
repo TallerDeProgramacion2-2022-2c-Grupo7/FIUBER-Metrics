@@ -1,10 +1,12 @@
 from .firebase_admin import auth
 
+
 def get_user_count():
     count = 0
     for _ in auth.list_users().iterate_all():
         count += 1
     return count
+
 
 def get_admin_count():
     count = 0
@@ -15,6 +17,7 @@ def get_admin_count():
         except TypeError:
             pass
     return count
+
 
 def get_blocked_user_count():
     count = 0

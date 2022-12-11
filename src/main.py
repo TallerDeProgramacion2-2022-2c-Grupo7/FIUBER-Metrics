@@ -18,17 +18,18 @@ app.add_middleware(
     allow_origins=["*"],
     allow_methods=["*"],
     allow_headers=["*"],
-    allow_credentials=True
+    allow_credentials=True,
 )
 
 app.add_middleware(IdTokenMiddleware)
 app.add_middleware(DatadogEventMiddleware)
 
+
 @app.get("/")
 async def get_events(
-        max_results: Union[int, None] = 10,
-        page_token: Union[int, None] = None,
-    ):
+    max_results: Union[int, None] = 10,
+    page_token: Union[int, None] = None,
+):
     """
     List up to max_results recent events.
     """
@@ -37,14 +38,15 @@ async def get_events(
     except dbexc.OperationalError:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Internal server error"
+            detail="Internal server error",
         )
     n_results = len(events)
     more_results = n_results >= max_results
     return {
         "result": events,
-        "page_token": (events[-1]["event_id"]) if more_results else None
+        "page_token": (events[-1]["event_id"]) if more_results else None,
     }
+
 
 @app.post("/{event_type}")
 async def create_event(uid: str, event_type: EventType):
@@ -57,8 +59,9 @@ async def create_event(uid: str, event_type: EventType):
     except dbexc.OperationalError:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Internal server error"
+            detail="Internal server error",
         )
+
 
 @app.get("/stats")
 async def get_stats():
@@ -71,18 +74,17 @@ async def get_stats():
     try:
         stats = {
             event_type.value: Events.get_count_by_day(
-                event_type.value,
-                date_from,
-                date_to
+                event_type.value, date_from, date_to
             )
             for event_type in EventType
         }
     except dbexc.OperationalError:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Internal server error"
+            detail="Internal server error",
         )
     return {"result": stats}
+
 
 @app.get("/usersSummary")
 async def get_users_summary():
@@ -93,6 +95,6 @@ async def get_users_summary():
         "result": {
             "total_users": utils.get_user_count(),
             "total_admins": utils.get_admin_count(),
-            "total_blocked_users": utils.get_blocked_user_count()
+            "total_blocked_users": utils.get_blocked_user_count(),
         }
     }
