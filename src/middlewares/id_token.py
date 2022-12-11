@@ -10,7 +10,7 @@ class IdTokenMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
         if os.environ.get("ENV") == "test":
             return await call_next(request)
-        if request.method == "OPTIONS":
+        if request.method == "OPTIONS" or request.url.path in ("/docs", "/openapi.json"):
             return await call_next(request)
         try:
             authorization = request.headers["Authorization"]
