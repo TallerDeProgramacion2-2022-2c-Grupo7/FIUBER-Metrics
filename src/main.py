@@ -49,7 +49,7 @@ async def get_events(
 @app.post("/{event_type}")
 async def create_event(uid: str, event_type: EventType):
     """
-    Create a new login event.
+    Create a new event given a user's uid and event type.
     """
     event = Events(user_id=uid, event_type=event_type, datetime=datetime.now())
     try:
@@ -62,6 +62,10 @@ async def create_event(uid: str, event_type: EventType):
 
 @app.get("/stats")
 async def get_stats():
+    """
+    Get the count of events from the
+    last 15 days grouped by event type and date.
+    """
     date_to = date.today()
     date_from = date_to - timedelta(days=15)
     try:
@@ -82,6 +86,9 @@ async def get_stats():
 
 @app.get("/usersSummary")
 async def get_users_summary():
+    """
+    Get users summary (total number of users, admins and blocked users).
+    """
     return {
         "result": {
             "total_users": utils.get_user_count(),
